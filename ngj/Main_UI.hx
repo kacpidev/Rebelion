@@ -12,7 +12,8 @@ import ngj.ui.SimpleUI;
 class Main_UI 
 {
 	public static var instance(default, null):Main_UI = new Main_UI();
-
+	var s2d:Dynamic;
+	
 	//balance
 	var scavengeTime:Float = 1; //cheats!!! 60*3;
 	var raidTime:Float = 1; //cheats!!! 60*3;
@@ -93,6 +94,7 @@ class Main_UI
 	
 	public function buildUI(s2d:Dynamic)
 	{
+		this.s2d = s2d;
 		
 		leftBar = new h2d.Flow(s2d);
 		leftBar.isVertical = true;
@@ -105,14 +107,14 @@ class Main_UI
 		centerBar.verticalSpacing = 5;
 		centerBar.padding = 10;
 		centerBar.y = s2d.height / 2;
-		centerBar.x = s2d.width / 4;
+		centerBar.x = s2d.width / 2 - s2d.width/5;
 		
 		rightBar = new h2d.Flow(s2d);
 		rightBar.isVertical = true;
 		rightBar.verticalSpacing = 5;
 		rightBar.padding = 10;
 		rightBar.y = s2d.height / 2;
-		rightBar.x = s2d.width / 2;
+		rightBar.x = s2d.width / 2 + s2d.width / 4;
 		
 		var buttonFlow:Flow = new Flow(leftBar);
 		buttonFlow.horizontalSpacing = 5;
@@ -128,65 +130,47 @@ class Main_UI
 		buildShelterText = SimpleUI.addText(buttonFlow,  '$shelterCost');
 		SimpleUI.addText(leftBar, "Provide shelter for rebeliants");
 		
-		var buttonFlow:Flow = new Flow(leftBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		buildWarehouseButton = SimpleUI.addButton(buttonFlow, "BUILD WAREHOUSE", function() {});
-		buildWarehouseText = SimpleUI.addText(buttonFlow, '$warehouseCost');
-		SimpleUI.addText(leftBar, "Build warehouse to store more");
-		
-		var buttonFlow:Flow = new Flow(leftBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		buildRadiostationButton = SimpleUI.addButton(buttonFlow, "BUILD RADIOSTATION", function() {});
-		buildRadiostationText = SimpleUI.addText(buttonFlow, '$radiostationCost');
-		SimpleUI.addText(leftBar, "Transmit your own propaganda!");
-		
-		var buttonFlow:Flow = new Flow(leftBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		buildArmoryButton = SimpleUI.addButton(buttonFlow, "BUILD ARMORY", function() {});
-		buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
-		SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
-		
-		var buttonFlow:Flow = new Flow(centerBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		raidCityButton = SimpleUI.addButton(buttonFlow, "RAID CITY",onRaidCity);
-		raidCityText = SimpleUI.addText(buttonFlow, '');
-		SimpleUI.addText(centerBar, "I know it's horrible but it's for greater good!");
-		
-		var buttonFlow:Flow = new Flow(centerBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onRaidCity);
-		trainSoldierText = SimpleUI.addText(buttonFlow, '');
-		SimpleUI.addText(centerBar, "With more Soldiers you can ride more effectively!");
-		
-		var buttonFlow:Flow = new Flow(centerBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onRaidCity);
-		buyGunsText = SimpleUI.addText(buttonFlow, '');
-		SimpleUI.addText(centerBar, "You need guns to try the Soldiers");
-		
-		var buttonFlow:Flow = new Flow(centerBar);
-		buttonFlow.horizontalSpacing = 5;
-		//buttonFlow.padding = 10;
-		attackButton = SimpleUI.addButton(buttonFlow, "ATTACK GOVERMENT", function() { buildPopUpWindow(s2d); });
-		attackText = SimpleUI.addText(buttonFlow, '');
-		SimpleUI.addText(centerBar, "endGame");
-		
 		foodLabel = SimpleUI.addText(rightBar, 'Food: $foodCount');
 		materialsLabel = SimpleUI.addText(rightBar, 'Materials: $materialsCount');
-		manpowerLabel = SimpleUI.addText(rightBar, 'Rebeliants: $manpowerCount');
-		influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
-		gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
-		soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
-		
 	}
 	
-	function buildPopUpWindow(?s2d:Dynamic)
+		///
+		//
+		//
+		//
+		//var buttonFlow:Flow = new Flow(centerBar);
+		//buttonFlow.horizontalSpacing = 5;
+		////buttonFlow.padding = 10;
+		//raidCityButton = SimpleUI.addButton(buttonFlow, "RAID CITY",onRaidCity);
+		//raidCityText = SimpleUI.addText(buttonFlow, '');
+		//SimpleUI.addText(centerBar, "I know it's horrible but it's for greater good!");
+		//
+		//var buttonFlow:Flow = new Flow(centerBar);
+		//buttonFlow.horizontalSpacing = 5;
+		////buttonFlow.padding = 10;
+		//trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onRaidCity);
+		//trainSoldierText = SimpleUI.addText(buttonFlow, '');
+		//SimpleUI.addText(centerBar, "With more Soldiers you can ride more effectively!");
+		//
+		//var buttonFlow:Flow = new Flow(centerBar);
+		//buttonFlow.horizontalSpacing = 5;
+		////buttonFlow.padding = 10;
+		//buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onRaidCity);
+		//buyGunsText = SimpleUI.addText(buttonFlow, '');
+		//SimpleUI.addText(centerBar, "You need guns to try the Soldiers");
+		//
+		//var buttonFlow:Flow = new Flow(centerBar);
+		//buttonFlow.horizontalSpacing = 5;
+		////buttonFlow.padding = 10;
+		//attackButton = SimpleUI.addButton(buttonFlow, "ATTACK GOVERMENT", function() { buildPopUpWindow(s2d); });
+		//attackText = SimpleUI.addText(buttonFlow, '');
+		//SimpleUI.addText(centerBar, "endGame");
+		//
+		//
+
+		//
+	
+	function buildPopUpWindow(?s2d:Dynamic,label:String)
 	{
 		var fpw:Flow = new Flow(s2d);
 		fpw.isVertical = true;
@@ -196,7 +180,7 @@ class Main_UI
 		fpw.x = s2d.width / 4;
 		fpw.backgroundTile = h2d.Tile.fromColor(0x606060);
 		
-		SimpleUI.addText(fpw, "You've contacted with foreign state that is willing to help you! You can now smuggle guns!");
+		SimpleUI.addText(fpw, label);
 		SimpleUI.addButton(fpw, "Close window", function() {fpw.remove(); });
 	}
 	
@@ -218,6 +202,17 @@ class Main_UI
 		materialsCount -= shelterCost;
 		shelterLevel += 1;
 		shelterCost = shelterBaseCost * (shelterLevel + 1);
+		if (shelterLevel == 1)
+		{
+			var buttonFlow:Flow = new Flow(leftBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			buildWarehouseButton = SimpleUI.addButton(buttonFlow, "BUILD WAREHOUSE", function() {});
+			buildWarehouseText = SimpleUI.addText(buttonFlow, '$warehouseCost');
+			SimpleUI.addText(leftBar, "Build warehouse to store more");
+			
+			manpowerLabel = SimpleUI.addText(rightBar, 'Rebeliants: $manpowerCount');
+		}
 	}
 	
 	function onBuildWarehouse()
@@ -227,6 +222,15 @@ class Main_UI
 		maxFood = maxFoodBase * (warehouseLevel + 1);
 		maxMaterials = maxMaterialsBase * (warehouseLevel + 1);
 		warehouseCost = warehouseBaseCost * (warehouseLevel + 1);
+		if (warehouseLevel == 1)
+		{
+			var buttonFlow:Flow = new Flow(leftBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			buildRadiostationButton = SimpleUI.addButton(buttonFlow, "BUILD RADIOSTATION", function() {});
+			buildRadiostationText = SimpleUI.addText(buttonFlow, '$radiostationCost');
+			SimpleUI.addText(leftBar, "Transmit your own propaganda!");
+		}
 	}
 	
 	function onBuildRadiostation()
@@ -235,6 +239,22 @@ class Main_UI
 		radiostationLevel += 1;
 		influenceCount = influenceBase * radiostationLevel;
 		radiostationCost = radiostationBaseCost * (radiostationLevel + 1);
+		if (radiostationLevel == 1)
+		{
+			var buttonFlow:Flow = new Flow(leftBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			buildArmoryButton = SimpleUI.addButton(buttonFlow, "BUILD ARMORY", function() {});
+			buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
+			SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
+			
+			influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
+			gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
+			soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
+			buildPopUpWindow(s2d, "You've contacted with foreign state that is willing to help you! They've sent you some rifles and soldiers.");
+			gunsCount += 2;
+			soldiersCount += 2;
+		}
 	}
 	
 	function onBuildArmory()
@@ -346,14 +366,22 @@ class Main_UI
 		//update UI
 		foodLabel.text = 'Food: $foodCount/$maxFood';
 		materialsLabel.text =  'Materials: $materialsCount/$maxMaterials';
-		manpowerLabel.text =  'Rebeliants: $manpowerCount';
-		influenceLabel.text =  'Influence: $influenceCount';
-		gunsLabel.text =  'Guns: $gunsCount/$maxGuns';
-		soldiersLabel.text =  'Soldiers: $soldiersCount/$maxSoldiers';
-		buildShelterText.text = '$shelterCost';
-		buildWarehouseText.text = '$warehouseCost';
-		buildRadiostationText.text = '$radiostationCost';
-		buildArmoryText.text = '$armoryCost';
+		if(manpowerLabel != null)
+			manpowerLabel.text =  'Rebeliants: $manpowerCount';
+		if(influenceLabel != null)
+			influenceLabel.text =  'Influence: $influenceCount';
+		if(gunsLabel != null)
+			gunsLabel.text =  'Guns: $gunsCount/$maxGuns';
+		if(soldiersLabel != null)
+			soldiersLabel.text =  'Soldiers: $soldiersCount/$maxSoldiers';
+		if(buildShelterText != null)
+			buildShelterText.text = '$shelterCost';
+		if(buildWarehouseText != null)
+			buildWarehouseText.text = '$warehouseCost';
+		if(buildRadiostationText != null)
+			buildRadiostationText.text = '$radiostationCost';
+		if(buildArmoryText != null)
+			buildArmoryText.text = '$armoryCost';
 		
 	}
 }
