@@ -21,9 +21,14 @@ class Main_UI
 	var manpowerPerShelter:Float = 1;
 	var shelterBaseCost:Float = 10;
 	var warehouseBaseCost:Float = 100;
+	var radiostationBaseCost:Float = 100;
+	var armoryBaseCost:Float = 150;
+	var maxBaseGuns:Float = 5;
+	var maxBaseSoldiers:Float = 5;
 	var feedPeriod:Float = 120;
 	var maxFoodBase:Float = 200;
 	var maxMaterialsBase:Float = 200;
+	var influenceBase:Float = 10;
 	
 	//control variables //potem trzeba to w init dodac
 	var scavenging:Bool = false;
@@ -31,9 +36,15 @@ class Main_UI
 	var shelterLevel:Float = 0;
 	var warehouseCost:Float = 100;
 	var warehouseLevel:Float = 0;
+	var radiostationCost:Float = 100;
+	var radiostationLevel:Float = 0;
+	var armoryCost:Float = 100;
+	var armoryLevel:Float = 0;
 	var foodTimer:Float = 0;
 	var maxFood:Float = 200;
 	var maxMaterials:Float = 200;
+	var maxGuns:Float = 5;
+	var maxSoldiers:Float = 5;
 	
 	var leftBar : h2d.Flow;
 	var scavengeButton:Flow;
@@ -42,6 +53,10 @@ class Main_UI
 	var buildShelterText:Text;
 	var buildWarehouseButton:Flow;
 	var buildWarehouseText:Text;
+	var buildRadiostationButton:Flow;
+	var buildRadiostationText:Text;
+	var buildArmoryButton:Flow;
+	var buildArmoryText:Text;
 	
 	var rightBar:Flow;
 	var foodLabel:Text;
@@ -50,6 +65,12 @@ class Main_UI
 	var materialsCount:Float = 0;
 	var manpowerLabel:Text;
 	var manpowerCount:Float = 0;
+	var influenceLabel:Text;
+	var influenceCount:Float = 0;
+	var gunsLabel:Text;
+	var gunsCount:Float = 0;
+	var soldiersLabel:Text;
+	var soldiersCount:Float = 0;
 	
 	var scavengeTimer:Float = 0;
 	
@@ -78,22 +99,43 @@ class Main_UI
 		//buttonFlow.paddingBottom = 7;
 		scavengeButton = SimpleUI.addButton(buttonFlow, "SCAVENGE", onScavenge);
 		scavTimerText = SimpleUI.addText(buttonFlow, '');
+		SimpleUI.addText(leftBar, "Scavenge for food n' stuff");
 		
 		var buttonFlow:Flow = new Flow(leftBar);
 		buttonFlow.horizontalSpacing = 5;
 		//buttonFlow.padding = 10;
 		buildShelterButton = SimpleUI.addButton(buttonFlow, "BUILD SHELTER", function() {});
 		buildShelterText = SimpleUI.addText(buttonFlow,  '$shelterCost');
+		SimpleUI.addText(leftBar, "Provide shelter for rebeliants");
 		
 		var buttonFlow:Flow = new Flow(leftBar);
 		buttonFlow.horizontalSpacing = 5;
 		//buttonFlow.padding = 10;
 		buildWarehouseButton = SimpleUI.addButton(buttonFlow, "BUILD WAREHOUSE", function() {});
 		buildWarehouseText = SimpleUI.addText(buttonFlow, '$warehouseCost');
+		SimpleUI.addText(leftBar, "Build warehouse to store more");
+		
+		var buttonFlow:Flow = new Flow(leftBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		buildRadiostationButton = SimpleUI.addButton(buttonFlow, "BUILD RADIOSTATION", function() {});
+		buildRadiostationText = SimpleUI.addText(buttonFlow, '$radiostationCost');
+		SimpleUI.addText(leftBar, "Transmit your own propaganda!");
+		
+		var buttonFlow:Flow = new Flow(leftBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		buildArmoryButton = SimpleUI.addButton(buttonFlow, "BUILD ARMORY", function() {});
+		buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
+		SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
+		
 		
 		foodLabel = SimpleUI.addText(rightBar, 'Food: $foodCount');
 		materialsLabel = SimpleUI.addText(rightBar, 'Materials: $materialsCount');
 		manpowerLabel = SimpleUI.addText(rightBar, 'Rebeliants: $manpowerCount');
+		influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
+		gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
+		soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
 	}
 	
 	function onScavenge()
@@ -117,6 +159,22 @@ class Main_UI
 		maxFood = maxFoodBase * (warehouseLevel + 1);
 		maxMaterials = maxMaterialsBase * (warehouseLevel + 1);
 		warehouseCost = warehouseBaseCost * (warehouseLevel + 1);
+	}
+	
+	function onBuildRadiostation()
+	{
+		materialsCount -= radiostationCost;
+		radiostationLevel += 1;
+		influenceCount = influenceBase * (radiostationLevel - 1);
+		radiostationCost = radiostationBaseCost * (radiostationLevel + 1);
+	}
+	
+	function onBuildArmory()
+	{
+		materialsCount -= armoryCost;
+		armoryLevel += 1;
+		maxGuns = maxBaseGuns * (armoryLevel + 1);
+		armoryCost = armoryBaseCost * (armoryLevel + 1);
 	}
 	
 	function disableButton(button:Flow)
@@ -184,6 +242,22 @@ class Main_UI
 		{
 			enableButton(buildWarehouseButton, onBuildWarehouse);
 		}
+		if (materialsCount < radiostationCost)
+		{
+			disableButton(buildRadiostationButton);
+		}
+		else
+		{
+			enableButton(buildRadiostationButton, onBuildRadiostation);
+		}
+		if (materialsCount < armoryCost)
+		{
+			disableButton(buildArmoryButton);
+		}
+		else
+		{
+			enableButton(buildArmoryButton, onBuildArmory);
+		}
 		
 		
 		if (foodCount > maxFood)
@@ -204,8 +278,13 @@ class Main_UI
 		foodLabel.text = 'Food: $foodCount/$maxFood';
 		materialsLabel.text =  'Materials: $materialsCount/$maxMaterials';
 		manpowerLabel.text =  'Rebeliants: $manpowerCount';
+		influenceLabel.text =  'Influence: $influenceCount';
+		gunsLabel.text =  'Guns: $gunsCount';
+		soldiersLabel.text =  'Soldiers: $soldiersCount';
 		buildShelterText.text = '$shelterCost';
 		buildWarehouseText.text = '$warehouseCost';
+		buildRadiostationText.text = '$radiostationCost';
+		buildArmoryText.text = '$armoryCost';
 		
 	}
 }
