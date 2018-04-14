@@ -14,7 +14,8 @@ class Main_UI
 	public static var instance(default, null):Main_UI = new Main_UI();
 
 	//balance
-	var scavengeTime:Float = 60*3;
+	var scavengeTime:Float = 1; //cheats!!! 60*3;
+	var raidTime:Float = 1; //cheats!!! 60*3;
 	var foodPerScavenge:Float = 5;
 	var materialsPerScavenge:Float = 5;
 	var scavengeSpread:Float = 0.35;
@@ -32,6 +33,7 @@ class Main_UI
 	
 	//control variables //potem trzeba to w init dodac
 	var scavenging:Bool = false;
+	var raiding:Bool = false;
 	var shelterCost:Float = 10;
 	var shelterLevel:Float = 0;
 	var warehouseCost:Float = 100;
@@ -45,6 +47,8 @@ class Main_UI
 	var maxMaterials:Float = 200;
 	var maxGuns:Float = 5;
 	var maxSoldiers:Float = 5;
+	var scavengeTimer:Float = 0;
+	var raidTimer:Float = 0;	
 	
 	var leftBar : h2d.Flow;
 	var scavengeButton:Flow;
@@ -57,6 +61,16 @@ class Main_UI
 	var buildRadiostationText:Text;
 	var buildArmoryButton:Flow;
 	var buildArmoryText:Text;
+	
+	var centerBar:Flow;
+	var raidCityButton:Flow;
+	var raidCityText:Text;
+	var trainSoldierButton:Flow;
+	var trainSoldierText:Text;
+	var buyGunsButton:Flow;
+	var buyGunsText:Text;
+	var attackButton:Flow;
+	var attackText:Text;
 	
 	var rightBar:Flow;
 	var foodLabel:Text;
@@ -72,8 +86,6 @@ class Main_UI
 	var soldiersLabel:Text;
 	var soldiersCount:Float = 0;
 	
-	var scavengeTimer:Float = 0;
-	
 	function new ()
 	{
 		
@@ -81,18 +93,26 @@ class Main_UI
 	
 	public function buildUI(s2d:Dynamic)
 	{
+		
 		leftBar = new h2d.Flow(s2d);
 		leftBar.isVertical = true;
 		leftBar.verticalSpacing = 5;
 		leftBar.padding = 10;
 		leftBar.y = s2d.height / 2;
 		
+		centerBar = new h2d.Flow(s2d);
+		centerBar.isVertical = true;
+		centerBar.verticalSpacing = 5;
+		centerBar.padding = 10;
+		centerBar.y = s2d.height / 2;
+		centerBar.x = s2d.width / 4;
+		
 		rightBar = new h2d.Flow(s2d);
 		rightBar.isVertical = true;
 		rightBar.verticalSpacing = 5;
 		rightBar.padding = 10;
 		rightBar.y = s2d.height / 2;
-		rightBar.x = s2d.width / 4;
+		rightBar.x = s2d.width / 2;
 		
 		var buttonFlow:Flow = new Flow(leftBar);
 		buttonFlow.horizontalSpacing = 5;
@@ -129,6 +149,33 @@ class Main_UI
 		buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
 		SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
 		
+		var buttonFlow:Flow = new Flow(centerBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		raidCityButton = SimpleUI.addButton(buttonFlow, "RAID CITY",onRaidCity);
+		raidCityText = SimpleUI.addText(buttonFlow, '');
+		SimpleUI.addText(centerBar, "I know it's horrible but it's for greater good!");
+		
+		var buttonFlow:Flow = new Flow(centerBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onRaidCity);
+		trainSoldierText = SimpleUI.addText(buttonFlow, '');
+		SimpleUI.addText(centerBar, "With more Soldiers you can ride more effectively!");
+		
+		var buttonFlow:Flow = new Flow(centerBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onRaidCity);
+		buyGunsText = SimpleUI.addText(buttonFlow, '');
+		SimpleUI.addText(centerBar, "You need guns to try the Soldiers");
+		
+		var buttonFlow:Flow = new Flow(centerBar);
+		buttonFlow.horizontalSpacing = 5;
+		//buttonFlow.padding = 10;
+		attackButton = SimpleUI.addButton(buttonFlow, "ATTACK GOVERMENT", function() { buildPopUpWindow(s2d); });
+		attackText = SimpleUI.addText(buttonFlow, '');
+		SimpleUI.addText(centerBar, "endGame");
 		
 		foodLabel = SimpleUI.addText(rightBar, 'Food: $foodCount');
 		materialsLabel = SimpleUI.addText(rightBar, 'Materials: $materialsCount');
@@ -136,12 +183,33 @@ class Main_UI
 		influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
 		gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
 		soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
+		
+	}
+	
+	function buildPopUpWindow(?s2d:Dynamic)
+	{
+		var fpw:Flow = new Flow(s2d);
+		fpw.isVertical = true;
+		fpw.verticalSpacing = 5;
+		fpw.padding = 10;
+		fpw.y = s2d.height / 4;
+		fpw.x = s2d.width / 4;
+		fpw.backgroundTile = h2d.Tile.fromColor(0x606060);
+		
+		SimpleUI.addText(fpw, "You've contacted with foreign state that is willing to help you! You can now smuggle guns!");
+		SimpleUI.addButton(fpw, "Close window", function() {fpw.remove(); });
 	}
 	
 	function onScavenge()
 	{
 		scavenging = true;
 		scavengeTimer = scavengeTime;
+	}
+	
+	function onRaidCity()
+	{
+		raiding = true;
+		raidTimer = raidTime;
 	}
 	
 	function onShelterBuild()
@@ -165,7 +233,7 @@ class Main_UI
 	{
 		materialsCount -= radiostationCost;
 		radiostationLevel += 1;
-		influenceCount = influenceBase * (radiostationLevel - 1);
+		influenceCount = influenceBase * radiostationLevel;
 		radiostationCost = radiostationBaseCost * (radiostationLevel + 1);
 	}
 	
@@ -174,6 +242,7 @@ class Main_UI
 		materialsCount -= armoryCost;
 		armoryLevel += 1;
 		maxGuns = maxBaseGuns * (armoryLevel + 1);
+		maxSoldiers = maxBaseSoldiers * (armoryLevel + 1);
 		armoryCost = armoryBaseCost * (armoryLevel + 1);
 	}
 	
@@ -279,8 +348,8 @@ class Main_UI
 		materialsLabel.text =  'Materials: $materialsCount/$maxMaterials';
 		manpowerLabel.text =  'Rebeliants: $manpowerCount';
 		influenceLabel.text =  'Influence: $influenceCount';
-		gunsLabel.text =  'Guns: $gunsCount';
-		soldiersLabel.text =  'Soldiers: $soldiersCount';
+		gunsLabel.text =  'Guns: $gunsCount/$maxGuns';
+		soldiersLabel.text =  'Soldiers: $soldiersCount/$maxSoldiers';
 		buildShelterText.text = '$shelterCost';
 		buildWarehouseText.text = '$warehouseCost';
 		buildRadiostationText.text = '$radiostationCost';
