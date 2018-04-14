@@ -3,35 +3,12 @@ import h2d.Flow;
 
 class SimpleUI //extends hxd.App 
 {
-	var fui : h2d.Flow;
-	
-	public function new (flow:Flow)
-	{
-		this.fui = flow; 
-	}
-//
-	//override function init() {
-		//fui = new h2d.Flow(s2d);
-		//fui.isVertical = true;
-		//fui.verticalSpacing = 5;
-		//fui.padding = 10;
-	//}
-//
-	//#if hxbit
-	//override function mainLoop() {
-		//if( hxd.Key.isDown(hxd.Key.CTRL) && hxd.Key.isPressed("S".code) ) {
-			//var bytes = s3d.serializeScene();
-			//hxd.File.saveBytes("scene.hsd", bytes);
-		//}
-		//super.mainLoop();
-	//}
-	//#end
 
-	function getFont() {
+	static function getFont() {
 		return hxd.res.DefaultFont.get();
 	}
 
-	public function addButton( label : String, onClick : Void -> Void ) {
+	static public function addButton(fui:Flow, label : String, onClick : Void -> Void ) {
 		var f = new h2d.Flow(fui);
 		f.padding = 5;
 		f.paddingBottom = 7;
@@ -46,7 +23,7 @@ class SimpleUI //extends hxd.App
 		return f;
 	}
 
-	public function addSlider( label : String, get : Void -> Float, set : Float -> Void, min : Float = 0., max : Float = 1. ) {
+	static public function addSlider(fui:Flow, label : String, get : Void -> Float, set : Float -> Void, min : Float = 0., max : Float = 1. ) {
 		var f = new h2d.Flow(fui);
 
 		f.horizontalSpacing = 5;
@@ -77,7 +54,7 @@ class SimpleUI //extends hxd.App
 		return sli;
 	}
 
-	public function addCheck( label : String, get : Void -> Bool, set : Bool -> Void ) {
+	static public function addCheck(fui:Flow, label : String, get : Void -> Bool, set : Bool -> Void ) {
 		var f = new h2d.Flow(fui);
 
 		f.horizontalSpacing = 5;
@@ -109,7 +86,7 @@ class SimpleUI //extends hxd.App
 		return i;
 	}
 
-	public function addText(text="") {
+	static public function addText(fui:Flow,text="") {
 		var tf = new h2d.Text(getFont(), fui);
 		tf.text = text;
 		return tf;

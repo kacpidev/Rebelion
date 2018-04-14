@@ -17,6 +17,7 @@ class Main_gfx
 	{
 		
 	}
+	
 	public function init(s2d:Dynamic)
 	{
 		var tile:Tile = hxd.Res.testLogo.toTile(); //ładowanie png
