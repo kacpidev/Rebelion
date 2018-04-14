@@ -1,5 +1,6 @@
 package ngj;
 import h2d.Bitmap;
+import h2d.Tile;
 import hxd.App;
 import ngj.ui.SimpleUI;
 /**
@@ -15,7 +16,10 @@ class Main extends App
 	
 	override function init() 
 	{
-		var tile = h2d.Tile.fromColor(0xFF0000, 100, 100);
+		hxd.Res.initEmbed();
+		
+		var tile:Tile = hxd.Res.testLogo.toTile();
+		tile = tile.center();
 		bmp = new h2d.Bitmap(tile, s2d);
 		bmp.x = s2d.width * 0.5;
 		bmp.y = s2d.height * 0.5;
@@ -31,7 +35,7 @@ class Main extends App
 	
 	override function update(dt:Float) 
 	{
-		bmp.rotation += 0.1;
+		bmp.rotation += 0.01;
 	}
 	
 	static function main() 

@@ -45,8 +45,8 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="OpenDocument" />
-    <option testMovieCommand="index.html" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="chrome;index.html" />
   </options>
   <!-- Plugin storage -->
   <storage />
