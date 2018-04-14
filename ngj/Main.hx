@@ -13,14 +13,14 @@ class Main extends App
 	{
 		hxd.Res.initEmbed();
 		
-		Main_gfx.instance.init(s2d);
+		ngj.gfx.Main_gfx.instance.init(s2d);
 		Main_UI.instance.buildUI(s2d);
 	}
 	
 	override function update(dt:Float) 
 	{
 		Main_UI.instance.update(dt);
-		Main_gfx.instance.update(dt);
+		ngj.gfx.Main_gfx.instance.update(dt);
 	}
 	
 	static function main() 
