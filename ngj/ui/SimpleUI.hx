@@ -31,26 +31,26 @@ class SimpleUI //extends hxd.App
 		var tf = new h2d.Text(getFont(), f);
 		tf.text = label;
 		tf.maxWidth = 70;
-		tf.textAlign = Right;
+		tf.textAlign = Left;
 
 		var sli = new h2d.Slider(100, 10, f);
 		sli.minValue = min;
 		sli.maxValue = max;
 		sli.value = get();
 
-		var tf = new h2d.TextInput(getFont(), f);
-		tf.text = "" + hxd.Math.fmt(sli.value);
-		sli.onChange = function() {
-			set(sli.value);
-			tf.text = "" + hxd.Math.fmt(sli.value);
-			f.needReflow = true;
-		};
-		tf.onChange = function() {
-			var v = Std.parseFloat(tf.text);
-			if( Math.isNaN(v) ) return;
-			sli.value = v;
-			set(v);
-		};
+		//var tf = new h2d.TextInput(getFont(), f);
+		//tf.text = "" + hxd.Math.fmt(sli.value);
+		//sli.onChange = function() {
+			//set(sli.value);
+			//tf.text = "" + hxd.Math.fmt(sli.value);
+			//f.needReflow = true;
+		//};
+		//tf.onChange = function() {
+			//var v = Std.parseFloat(tf.text);
+			//if( Math.isNaN(v) ) return;
+			//sli.value = v;
+			//set(v);
+		//};
 		return sli;
 	}
 

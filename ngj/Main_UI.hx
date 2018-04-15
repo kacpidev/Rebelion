@@ -1,6 +1,7 @@
 package ngj;
 
 import h2d.Flow;
+import h2d.Slider;
 import h2d.Sprite;
 import h2d.Text;
 import hxd.res.Sound;
@@ -29,13 +30,14 @@ class Main_UI
 	var shelterBaseCost:Float = 10;
 	var warehouseBaseCost:Float = 100;
 	var radiostationBaseCost:Float = 100;
-	var armoryBaseCost:Float = 150;
+	var armoryBaseCost:Float = 200;
 	var maxBaseGuns:Float = 5;
 	var maxBaseSoldiers:Float = 5;
 	var feedPeriod:Float = 120;
 	var maxFoodBase:Float = 200;
 	var maxMaterialsBase:Float = 200;
 	var influenceBase:Float = 10;
+	var maxInfluence:Float = 60;
 	var gunCostFood:Float = 100;
 	var gunCostMaterials:Float = 20;
 	
@@ -52,7 +54,7 @@ class Main_UI
 	var warehouseLevel:Float = 0;
 	var radiostationCost:Float = 100;
 	var radiostationLevel:Float = 0;
-	var armoryCost:Float = 100;
+	var armoryCost:Float = 200;
 	var armoryLevel:Float = 0;
 	var foodTimer:Float = 0;
 	var maxFood:Float = 200;
@@ -61,6 +63,7 @@ class Main_UI
 	var maxSoldiers:Float = 5;
 	var scavengeTimer:Float = 0;
 	var raidTimer:Float = 0;	
+	var name:String = "nordicGameJam";
 	
 	var leftBar : h2d.Flow;
 	var scavengeButton:Flow;
@@ -93,6 +96,7 @@ class Main_UI
 	var manpowerCount:Float = 0;
 	var influenceLabel:Text;
 	var influenceCount:Float = 0;
+	var influenceSlider:Slider;
 	var gunsLabel:Text;
 	var gunsCount:Float = 0;
 	var soldiersLabel:Text;
@@ -144,23 +148,6 @@ class Main_UI
 		foodLabel = SimpleUI.addText(rightBar, 'Food: $foodCount');
 		materialsLabel = SimpleUI.addText(rightBar, 'Materials: $materialsCount');
 	}
-	
-		///
-		//
-		//
-		//
-
-		//
-		//var buttonFlow:Flow = new Flow(centerBar);
-		//buttonFlow.horizontalSpacing = 5;
-		////buttonFlow.padding = 10;
-		//attackButton = SimpleUI.addButton(buttonFlow, "ATTACK GOVERMENT", function() { buildPopUpWindow(s2d); });
-		//attackText = SimpleUI.addText(buttonFlow, '');
-		//SimpleUI.addText(centerBar, "endGame");
-		//
-		//
-
-		//
 	
 	function buildPopUpWindow(?s2d:Dynamic,label:String)
 	{
@@ -255,9 +242,15 @@ class Main_UI
 			buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
 			SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
 			
-			influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
+			//influenceLabel = SimpleUI.addText(rightBar, 'Influence: $influenceCount');
+			influenceSlider = SimpleUI.addSlider(rightBar, "Influence", function() {return influenceCount; }, function(b:Float) {}, 0, maxInfluence);
+			influenceSlider.preventClick();
+			influenceSlider.cursor = Default;
+			influenceSlider.tile = h2d.Tile.fromColor(0x606060, 1, 10);
+			influenceSlider.cursorTile = h2d.Tile.fromColor(0x202020, 1, 10);			
 			gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
 			soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
+			//influenceSlider = SimpleUI.addSlider(rightBar, "influence", function() {return 50}, function(b:Float) {}, 0, 100);
 			buildPopUpWindow(s2d, "You've contacted with foreign state that is willing to help you! They've sent you some rifles and soldiers.");
 			gunsCount += 1;
 			soldiersCount += 2;
@@ -275,16 +268,14 @@ class Main_UI
 			buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onBuyGuns);
 			buyGunsText = SimpleUI.addText(buttonFlow, '');
 			SimpleUI.addText(centerBar, 'Cost: $gunCostFood Food, $gunCostMaterials Materials');
-			
+		}
+		if (influenceCount >= maxInfluence)
+		{
 			var buttonFlow:Flow = new Flow(centerBar);
 			buttonFlow.horizontalSpacing = 5;
 			//buttonFlow.padding = 10;
-			trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onTrainSoldiers);
-			trainSoldierText = SimpleUI.addText(buttonFlow, '');
-			SimpleUI.addText(centerBar, "Cost: 1 Gun, 1 Rebeliant. With more Soldiers you can ride more effectively!");
-			
-
-		
+			attackButton = SimpleUI.addButton(buttonFlow, "ATTACK GOVERMENT", function() { buildPopUpWindow(s2d,'The dawn of dictatorship marks a new era... Long live $name!'); });
+			attackText = SimpleUI.addText(buttonFlow, '');
 		}
 	}
 	
@@ -295,6 +286,16 @@ class Main_UI
 		maxGuns = maxBaseGuns * (armoryLevel + 1);
 		maxSoldiers = maxBaseSoldiers * (armoryLevel + 1);
 		armoryCost = armoryBaseCost * (armoryLevel + 1);
+		
+		if (armoryLevel == 1)
+		{
+			var buttonFlow:Flow = new Flow(centerBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			trainSoldierButton = SimpleUI.addButton(buttonFlow, "TRAIN SOLDIER",onTrainSoldiers);
+			trainSoldierText = SimpleUI.addText(buttonFlow, '');
+			SimpleUI.addText(centerBar, "Cost: 1 Gun, 1 Rebeliant. With more Soldiers you can ride more effectively!");
+		}
 	}
 	
 	function disableButton(button:Flow)
@@ -470,6 +471,8 @@ class Main_UI
 			manpowerLabel.text =  'Rebeliants: $manpowerCount';
 		if(influenceLabel != null)
 			influenceLabel.text =  'Influence: $influenceCount';
+		if (influenceSlider != null)
+			influenceSlider.value = influenceCount;
 		if(gunsLabel != null)
 			gunsLabel.text =  'Guns: $gunsCount/$maxGuns';
 		if(soldiersLabel != null)
