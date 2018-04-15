@@ -16,9 +16,14 @@ class Main_UI
 	
 	//balance
 	var scavengeTime:Float = 1; //cheats!!! 60*3;
-	var raidTime:Float = 1; //cheats!!! 60*3;
+	var raidTime:Float = 60 * 10;
+	var trainSoldiersTime:Float = 60 * 10;
+	var gunTime:Float = 60 * 10;
 	var foodPerScavenge:Float = 5;
 	var materialsPerScavenge:Float = 5;
+	var foodPerRaid:Float = 50;
+	var materialsPerRaid:Float = 50;
+	var raidSpread:Float = 0.20;
 	var scavengeSpread:Float = 0.35;
 	var manpowerPerShelter:Float = 1;
 	var shelterBaseCost:Float = 10;
@@ -31,10 +36,16 @@ class Main_UI
 	var maxFoodBase:Float = 200;
 	var maxMaterialsBase:Float = 200;
 	var influenceBase:Float = 10;
+	var gunCostFood:Float = 100;
+	var gunCostMaterials:Float = 20;
 	
 	//control variables //potem trzeba to w init dodac
 	var scavenging:Bool = false;
 	var raiding:Bool = false;
+	var gunning:Bool = false;
+	var training:Bool = false;
+	var gunTimer:Float = 0;
+	var trainSoldiersTimer:Float = 0;
 	var shelterCost:Float = 10;
 	var shelterLevel:Float = 0;
 	var warehouseCost:Float = 100;
@@ -138,26 +149,7 @@ class Main_UI
 		//
 		//
 		//
-		//var buttonFlow:Flow = new Flow(centerBar);
-		//buttonFlow.horizontalSpacing = 5;
-		////buttonFlow.padding = 10;
-		//raidCityButton = SimpleUI.addButton(buttonFlow, "RAID CITY",onRaidCity);
-		//raidCityText = SimpleUI.addText(buttonFlow, '');
-		//SimpleUI.addText(centerBar, "I know it's horrible but it's for greater good!");
-		//
-		//var buttonFlow:Flow = new Flow(centerBar);
-		//buttonFlow.horizontalSpacing = 5;
-		////buttonFlow.padding = 10;
-		//trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onRaidCity);
-		//trainSoldierText = SimpleUI.addText(buttonFlow, '');
-		//SimpleUI.addText(centerBar, "With more Soldiers you can ride more effectively!");
-		//
-		//var buttonFlow:Flow = new Flow(centerBar);
-		//buttonFlow.horizontalSpacing = 5;
-		////buttonFlow.padding = 10;
-		//buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onRaidCity);
-		//buyGunsText = SimpleUI.addText(buttonFlow, '');
-		//SimpleUI.addText(centerBar, "You need guns to try the Soldiers");
+
 		//
 		//var buttonFlow:Flow = new Flow(centerBar);
 		//buttonFlow.horizontalSpacing = 5;
@@ -196,6 +188,21 @@ class Main_UI
 		raidTimer = raidTime;
 	}
 	
+	function onBuyGuns()
+	{
+		foodCount -= gunCostFood;
+		materialsCount -= gunCostMaterials;
+		gunning = true;
+		gunTimer = gunTime;
+	}
+	
+	function onTrainSoldiers()
+	{
+		training = true;
+		manpowerCount -= 1;
+		trainSoldiersTimer = trainSoldiersTime;
+	}
+	
 	function onShelterBuild()
 	{
 		manpowerCount += manpowerPerShelter;
@@ -207,7 +214,7 @@ class Main_UI
 			var buttonFlow:Flow = new Flow(leftBar);
 			buttonFlow.horizontalSpacing = 5;
 			//buttonFlow.padding = 10;
-			buildWarehouseButton = SimpleUI.addButton(buttonFlow, "BUILD WAREHOUSE", function() {});
+			buildWarehouseButton = SimpleUI.addButton(buttonFlow, "BUILD WAREHOUSE", onBuildWarehouse);
 			buildWarehouseText = SimpleUI.addText(buttonFlow, '$warehouseCost');
 			SimpleUI.addText(leftBar, "Build warehouse to store more");
 			
@@ -227,7 +234,7 @@ class Main_UI
 			var buttonFlow:Flow = new Flow(leftBar);
 			buttonFlow.horizontalSpacing = 5;
 			//buttonFlow.padding = 10;
-			buildRadiostationButton = SimpleUI.addButton(buttonFlow, "BUILD RADIOSTATION", function() {});
+			buildRadiostationButton = SimpleUI.addButton(buttonFlow, "BUILD RADIOSTATION", onBuildRadiostation);
 			buildRadiostationText = SimpleUI.addText(buttonFlow, '$radiostationCost');
 			SimpleUI.addText(leftBar, "Transmit your own propaganda!");
 		}
@@ -244,7 +251,7 @@ class Main_UI
 			var buttonFlow:Flow = new Flow(leftBar);
 			buttonFlow.horizontalSpacing = 5;
 			//buttonFlow.padding = 10;
-			buildArmoryButton = SimpleUI.addButton(buttonFlow, "BUILD ARMORY", function() {});
+			buildArmoryButton = SimpleUI.addButton(buttonFlow, "BUILD ARMORY", onBuildArmory);
 			buildArmoryText = SimpleUI.addText(buttonFlow, '$armoryCost');
 			SimpleUI.addText(leftBar, "You need armory to store weapons and train soldiers");
 			
@@ -252,8 +259,32 @@ class Main_UI
 			gunsLabel = SimpleUI.addText(rightBar, 'Guns: $gunsCount');
 			soldiersLabel = SimpleUI.addText(rightBar, 'Soldiers: $soldiersCount');
 			buildPopUpWindow(s2d, "You've contacted with foreign state that is willing to help you! They've sent you some rifles and soldiers.");
-			gunsCount += 2;
+			gunsCount += 1;
 			soldiersCount += 2;
+			
+			var buttonFlow:Flow = new Flow(centerBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			raidCityButton = SimpleUI.addButton(buttonFlow, "RAID CITY",onRaidCity);
+			raidCityText = SimpleUI.addText(buttonFlow, '');
+			SimpleUI.addText(centerBar, "I know it's horrible but it's for greater good!");
+						
+			var buttonFlow:Flow = new Flow(centerBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			buyGunsButton = SimpleUI.addButton(buttonFlow, "SMUGGLE GUNS",onBuyGuns);
+			buyGunsText = SimpleUI.addText(buttonFlow, '');
+			SimpleUI.addText(centerBar, 'Cost: $gunCostFood Food, $gunCostMaterials Materials');
+			
+			var buttonFlow:Flow = new Flow(centerBar);
+			buttonFlow.horizontalSpacing = 5;
+			//buttonFlow.padding = 10;
+			trainSoldierButton = SimpleUI.addButton(buttonFlow, "trainSoldier",onTrainSoldiers);
+			trainSoldierText = SimpleUI.addText(buttonFlow, '');
+			SimpleUI.addText(centerBar, "Cost: 1 Gun, 1 Rebeliant. With more Soldiers you can ride more effectively!");
+			
+
+		
 		}
 	}
 	
@@ -311,6 +342,75 @@ class Main_UI
 				materialsCount +=Math.round((materialsPerScavenge * (manpowerCount+1)) - (spread * materialsPerScavenge * (manpowerCount+1)));
 				scavTimerText.text = '';
 			}
+		}
+		if (raiding)
+		{
+			if (raidTimer > 0)
+			{
+				disableButton(raidCityButton);
+				raidTimer -= dt;
+				raidCityText.text = '$raidTimer';
+			}
+			else
+			{
+				enableButton(raidCityButton,onRaidCity);
+				raiding = false;
+				var spread = (Math.random() * raidSpread) - raidSpread/2;
+				foodCount += Math.round((foodPerRaid * soldiersCount)+ (spread * foodPerRaid * soldiersCount));
+				materialsCount +=Math.round((materialsPerRaid * soldiersCount) - (spread * materialsPerRaid * soldiersCount));
+				raidCityText.text = '';
+			}
+		}
+		if (gunning)
+		{
+			if (gunTimer > 0)
+			{
+				disableButton(buyGunsButton);
+				gunTimer -= dt;
+				buyGunsText.text = '$gunTimer';
+			}
+			else
+			{
+				gunning = false;
+				gunsCount += 1;
+				buyGunsText.text = '';
+			}
+		}
+		if (materialsCount < gunCostMaterials || foodCount < gunCostFood)
+		{
+			disableButton(buyGunsButton);
+		}
+		
+		if(materialsCount >= gunCostMaterials && foodCount >= gunCostFood && !gunning)
+		{
+			enableButton(buyGunsButton,onBuyGuns);
+		}
+		
+		
+		if (training)
+		{
+			if (trainSoldiersTimer > 0)
+			{
+				disableButton(trainSoldierButton);
+				trainSoldiersTimer -= dt;
+				trainSoldierText.text = '$trainSoldiersTimer';
+			}
+			else
+			{
+				
+				training = false;
+				soldiersCount += 1;
+				trainSoldierText.text = '';
+			}
+		}
+		if (manpowerCount < 1 || gunsCount < 1)
+		{
+			disableButton(trainSoldierButton);
+		}
+		
+		if(manpowerCount >= 1 && gunsCount >= 1 && !training)
+		{
+			enableButton(trainSoldierButton,onTrainSoldiers);
 		}
 		
 		//building
