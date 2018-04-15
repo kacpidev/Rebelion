@@ -155,14 +155,14 @@ class Main_gfx
 	public function update(dt:Float) 
 	{
 		fog2 += dt * 0.01;
-		fog3 += dt * 0.012;
+		fog3 -= dt * 0.012;
 		fog4 += dt * 0.015;
-		fog5 += dt * 0.03;
+		fog5 -= dt * 0.02;
 
 		if (fog2 > 100.0) fog2 -= 100.0;
-		if (fog3 > 100.0) fog3 -= 100.0;
+		if (fog3 < 0.0) fog3 += 100.0;
 		if (fog4 > 100.0) fog4 -= 100.0;
-		if (fog5 > 100.0) fog5 -= 100.0;
+		if (fog5 < 0.0) fog5 += 100.0;
 
 		var width = 1150;
 
